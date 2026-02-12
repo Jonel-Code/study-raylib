@@ -1,13 +1,17 @@
 #include "raylib.h"
-
+#include "./src/printer.cpp"
+#include "./src/controllable_pawn.cpp"
+#include "./src/named_colors.cpp"
 
 int main()
 {
-    InitWindow(800,450, "Clicker");
-    while(!WindowShouldClose()){
+    InitWindow(800, 450, "Clicker");
+    ControllablePawn *PlayerPawn = new ControllablePawn(50);
+    while (!WindowShouldClose())
+    {
         BeginDrawing();
-        ClearBackground(RAYWHITE);
-        DrawText("Clicker window text", 0,0,20, BLACK);
+        ClearBackground(CORNFLOWER_BLUE);
+        PlayerPawn->Update();
         EndDrawing();
     }
     CloseWindow();

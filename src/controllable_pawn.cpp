@@ -8,7 +8,10 @@
 class ControllablePawn
 {
 public:
-    ControllablePawn();
+    ControllablePawn()
+    {
+        //
+    }
     ControllablePawn(int PawnNormalSpeed, int PawnSize = 10)
     {
         NormalSpeed = PawnNormalSpeed;
@@ -56,22 +59,19 @@ private:
 
     void HandleInput()
     {
-
+        /// directional move
         if (IsKeyDown(KEY_W))
         {
             FrameMove.y += 1;
         }
-
         if (IsKeyDown(KEY_A))
         {
             FrameMove.x -= 1;
         }
-
         if (IsKeyDown(KEY_S))
         {
             FrameMove.y -= 1;
         }
-
         if (IsKeyDown(KEY_D))
         {
             FrameMove.x += 1;

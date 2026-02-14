@@ -1,5 +1,6 @@
 
 #include "vector"
+#include "string"
 #include "raylib.h"
 #include "./src/printer.cpp"
 #include "./src/controllable_pawn.cpp"
@@ -7,6 +8,7 @@
 #include "./src/level_bound_system.cpp"
 #include "./src/moving_ball.cpp"
 #include "./src/bouncing_ball_system.cpp"
+#include "./src/systems/traversal_system.cpp"
 
 int main()
 {
@@ -27,15 +29,35 @@ int main()
             Vector2{-100, 100}),
     };
 
+    Vector2 PlayOrigin{10, 10};
+    Vector2 PlayEnd{(float)(WindowWidth - 20), (float)(WindowHeight - 20)};
+    Vector2 BallMinSpeed{-100, -100};
+    Vector2 BallMaxSpeed{100, 100};
+    TraversingEntity<1000> *Balls = CreateRandomTraversingEntities<1000>(
+        PlayOrigin,
+        PlayEnd,
+        BallMinSpeed,
+        BallMaxSpeed);
+
+    float fps = 0;
+
     while (!WindowShouldClose())
     {
+        fps = GetFrameTime();
         BeginDrawing();
         ClearBackground(CORNFLOWER_BLUE);
         levelBoundSystem->Update();
-        playerPawn->Update();
-        BatchHandleBouncingBall(ballPool);
+        // playerPawn->Update();
+        // BatchHandleBouncingBall(ballPool);
+        RenderTraversingEntities(Balls);
+        UpdateTraversingEntities(Balls);
+        auto str = std::to_string(fps);
+        DrawText(str.c_str(), 10, 10, 20, WHITE);
         EndDrawing();
     }
+
+    delete[] Balls;
+
     CloseWindow();
     return 0;
 }

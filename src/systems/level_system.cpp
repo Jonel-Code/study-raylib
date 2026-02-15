@@ -49,8 +49,9 @@ Vector2 CaclulateMovementReflection(Vector2 &Movement, LevelBoundSegment &Segmen
     auto moveDotSegment = (normMovement.x * normSegment.x) + (normMovement.y * normSegment.y);
     auto normMS = 2 * (moveDotSegment / normSegmentMagSqr);
     Vector2 reflection{
-        (normMovement.x - (normMS * normSegment.x)) * MovementMag,
-        (normMovement.y - (normMS * normSegment.y)) * MovementMag,
+        /// adding bias of 0.001 is just a temporary fix for skidding balls, need to check in the future 
+        ((normMovement.x - (normMS * normSegment.x)) * MovementMag) + (float)0.001,
+        ((normMovement.y - (normMS * normSegment.y)) * MovementMag) - (float)0.001,
     };
 
     return reflection;
@@ -65,6 +66,7 @@ void ContainTraversingEntities(TraversingEntity<Size> *Entities, std::vector<Lev
         auto CollidedSegment = GetFirstCollidedSegment(location, Segments);
         if (!IsEmptySegment(CollidedSegment))
         {
+            /// TODO: fix the angle calculation for movements that are perpendicular to the segment
             Vector2 NewMovement = CaclulateMovementReflection(Entities->Movement[i], CollidedSegment);
             Entities->Movement[i].x = NewMovement.x;
             Entities->Movement[i].y = NewMovement.y;

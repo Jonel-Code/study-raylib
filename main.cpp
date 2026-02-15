@@ -34,6 +34,7 @@ int main()
     Vector2 PlayEnd{(float)(WindowWidth - 20), (float)(WindowHeight - 20)};
     Vector2 BallMinSpeed{-100, -100};
     Vector2 BallMaxSpeed{100, 100};
+    /// NOTE: currently, have a lot of balls (starts around 2000) will make skidding frequent, need to investigate the cause
     auto Balls = CreateRandomTraversingEntities<500>(
         PlayOrigin,
         PlayEnd,

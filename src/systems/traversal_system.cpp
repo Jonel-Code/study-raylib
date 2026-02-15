@@ -69,7 +69,7 @@ TraversingEntity<Size> *CreateRandomTraversingEntities(Vector2 Start, Vector2 En
         int mx = _RandomBySeed(MinSpeed.x, MaxSpeed.x, i, 201);
         int my = _RandomBySeed(MinSpeed.y, MaxSpeed.y, i, 223);
         std::cout << "speed: " << mx << ' ' << my << '\n';
-        Entities->Movement[i] = Vector2{(float)mx, (float)my};
+        Entities->Movement[i] = Vector2{(float)(mx == 0 ? 1 : mx), (float)(my == 0 ? 1 : my)};
     }
     return Entities;
 }

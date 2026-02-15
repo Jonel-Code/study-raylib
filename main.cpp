@@ -9,6 +9,7 @@
 #include "./src/moving_ball.cpp"
 #include "./src/bouncing_ball_system.cpp"
 #include "./src/systems/traversal_system.cpp"
+#include "./src/systems/level_system.cpp"
 
 int main()
 {
@@ -33,11 +34,16 @@ int main()
     Vector2 PlayEnd{(float)(WindowWidth - 20), (float)(WindowHeight - 20)};
     Vector2 BallMinSpeed{-100, -100};
     Vector2 BallMaxSpeed{100, 100};
-    TraversingEntity<1000> *Balls = CreateRandomTraversingEntities<1000>(
+    auto Balls = CreateRandomTraversingEntities<500>(
         PlayOrigin,
         PlayEnd,
         BallMinSpeed,
         BallMaxSpeed);
+
+    auto BoxLevel = CreateBoxLevel(
+        Vector2{10, 10},
+        WindowWidth - 20,
+        WindowHeight - 20);
 
     float fps = 0;
 
@@ -51,13 +57,11 @@ int main()
         // BatchHandleBouncingBall(ballPool);
         RenderTraversingEntities(Balls);
         UpdateTraversingEntities(Balls);
+        ContainTraversingEntities(Balls, BoxLevel);
         auto str = std::to_string(fps);
         DrawText(str.c_str(), 10, 10, 20, WHITE);
         EndDrawing();
     }
-
-    delete[] Balls;
-
     CloseWindow();
     return 0;
 }

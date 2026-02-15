@@ -5,8 +5,7 @@
 #include "iostream"
 #include "raylib.h"
 
-// #define TRAVERSING_ENTITY_RADIUS = 20.0
-static float GlobalBallSize  = 20;
+static float GlobalBallSize = 20;
 
 template <int Size>
 struct TraversingEntity
@@ -60,7 +59,7 @@ template <int Size>
 TraversingEntity<Size> *CreateRandomTraversingEntities(Vector2 Start, Vector2 End, Vector2 MinSpeed, Vector2 MaxSpeed)
 {
     auto Entities = new TraversingEntity<Size>{};
-    float offset = GlobalBallSize;
+    float offset = GlobalBallSize * 2;
     for (int i = 0; i < Size; i++)
     {
         int x = _RandomBySeed(Start.x + offset, End.x - offset, i, 101);

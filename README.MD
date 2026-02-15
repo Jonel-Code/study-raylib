@@ -1,6 +1,6 @@
 # Studying Raylib
 
-a repository build on my self study of raylib and basic c++
+a repository build for learing raylib and basic c++
 
 ### How to build and run:
 open terminal and run on project directory:

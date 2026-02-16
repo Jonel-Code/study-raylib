@@ -30,3 +30,17 @@ add_custom_command(TARGET Clicker POST_BUILD
     "${RAYLIB_DIR}/lib/raylib.dll"
     $<TARGET_FILE_DIR:Clicker>
 )
+
+
+add_executable(Pong main_pong.cpp)
+set_target_properties(Pong PROPERTIES 
+    LINK_FLAGS "/NODEFAULTLIB:MSVCRT"
+)
+target_compile_definitions(Pong PRIVATE raylib)
+target_link_libraries(Pong PRIVATE raylib winmm)
+
+add_custom_command(TARGET Pong POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    "${RAYLIB_DIR}/lib/raylib.dll"
+    $<TARGET_FILE_DIR:Pong>
+)

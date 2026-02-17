@@ -48,13 +48,10 @@ Vector2 CaclulateMovementReflection(Vector2 &Movement, Vector2 Start, Vector2 En
     auto normSegmentMagSqr = (normSegment.x * normSegment.x) + (normSegment.y * normSegment.y);
     auto moveDotSegment = (normMovement.x * normSegment.x) + (normMovement.y * normSegment.y);
     auto normMS = 2 * (moveDotSegment / normSegmentMagSqr);
-    Vector2 reflection{
-        /// adding bias of 0.001 is just a temporary fix for skidding balls, need to check in the future
-        ((normMovement.x - (normMS * normSegment.x)) * MovementMag) + (float)0.001,
-        ((normMovement.y - (normMS * normSegment.y)) * MovementMag) - (float)0.001,
+    return Vector2{
+        ((normMovement.x - (normMS * normSegment.x)) * MovementMag),
+        ((normMovement.y - (normMS * normSegment.y))) * MovementMag,
     };
-
-    return reflection;
 }
 
 class PongGame
@@ -115,11 +112,19 @@ protected:
 
     void TryReflectBall(PongBall &ball, PongWall Wall, float Magnitude = 1)
     {
+        static float frameTimeCheck = 0.0016f;
         if (CheckCollisionCircleLine(ball.Location, ball.Size, Wall.Start, Wall.End))
         {
             auto reflection = CaclulateMovementReflection(ball.Movement, Wall.Start, Wall.End);
-            ball.Movement.x = reflection.x * Magnitude;
-            ball.Movement.y = reflection.y * Magnitude;
+            // detect if the reflection movement will still cause the ball to collide in the future frame (skidding effect)
+            auto futureX = ball.Location.x + (reflection.x * Magnitude * frameTimeCheck);
+            auto futureY = ball.Location.y + (reflection.y * Magnitude * frameTimeCheck);
+            auto delta = GetFrameTime();
+            if (!CheckCollisionCircleLine(Vector2{futureX, futureY}, ball.Size, Wall.Start, Wall.End))
+            {
+                ball.Movement.x = reflection.x * Magnitude;
+                ball.Movement.y = reflection.y * Magnitude;
+            }
         }
     }
 
@@ -136,7 +141,6 @@ protected:
 
             for (auto &player : DirtyGameState->Players)
             {
-                /// TODO: fix skidding when ball hits the edge of the player's wall
                 auto playerWall = CalculatePlayerWall(player.Location, (int)player.Height);
                 TryReflectBall(ball, playerWall, 1.1f);
             }

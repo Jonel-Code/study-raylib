@@ -33,6 +33,7 @@ struct PongGameState
 {
     std::vector<PongWall> Walls;
     std::vector<PongBall> Balls;
+    std::vector<PongWall> PlayerGoals;
     std::vector<PongPlayer> Players;
     std::vector<int> PlayerScores;
 };
@@ -60,6 +61,7 @@ class PongGame
 protected:
     PongGameState *GameState;
     PongGameState *DirtyGameState;
+    Vector2 center;
 
     void RenderWalls()
     {
@@ -142,7 +144,16 @@ protected:
             for (auto &player : DirtyGameState->Players)
             {
                 auto playerWall = CalculatePlayerWall(player.Location, (int)player.Height);
-                TryReflectBall(ball, playerWall, 1.1f);
+                TryReflectBall(ball, playerWall, 1.01f);
+            }
+
+            for (auto &&goal : DirtyGameState->PlayerGoals)
+            {
+                if (CheckCollisionCircleLine(ball.Location, ball.Size, goal.Start, goal.End))
+                {
+                    ball.Location = center;
+                    ball.Movement = Vector2{-ball.Movement.x, -ball.Movement.y};
+                }
             }
         }
     }
@@ -229,6 +240,7 @@ public:
         Vector2 Origin{offset, offset};
         auto width = GetScreenWidth() - offset;
         auto height = GetScreenHeight() - offset;
+        center = Vector2{width / 2, height / 2};
 
         GameState->Balls.reserve(1);
         GameState->Balls.push_back(PongBall{
@@ -263,6 +275,16 @@ public:
             KEY_I,
             KEY_K,
             ms,
+        });
+
+        GameState->PlayerGoals.reserve(2);
+        GameState->PlayerGoals.push_back(PongWall{
+            Vector2{ur.x + offset, ur.y},
+            Vector2{lr.x + offset, lr.y},
+        });
+        GameState->PlayerGoals.push_back(PongWall{
+            Vector2{ul.x - offset, ul.y},
+            Vector2{ll.x - offset, ll.y},
         });
     }
 
